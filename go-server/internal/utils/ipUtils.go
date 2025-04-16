@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -12,14 +13,16 @@ func GetLocation(r *http.Request) *time.Location {
 	var location *time.Location
 	var err error
 
+	fmt.Printf("Timezone name: %v", timezoneName)
+
 	if timezoneName != "" {
 		location, err = time.LoadLocation(timezoneName)
 		if err != nil {
 			log.Printf("Invalid timezone: %s", timezoneName)
-			location = time.Local // fallback to server's location for invalid timezone
+			location = time.UTC
 		}
 	} else {
-		location = time.Local // If no timezone given, use the server's timezone.
+		location = time.UTC
 	}
 
 	return location
