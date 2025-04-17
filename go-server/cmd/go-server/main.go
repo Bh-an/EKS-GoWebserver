@@ -16,6 +16,6 @@ func main() {
 
 	http.HandleFunc("/", handlers.DefaultHandler)
 
-	fmt.Printf("Server listening on :%d\n", cfg.Server.Port)
+	log.Printf("Server listening on :%d\n", cfg.Server.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Server.Port), nil))
 }
