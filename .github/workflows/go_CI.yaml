@@ -40,7 +40,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: /go-server/
+          context: ./go-server/
+          file: ./go-server/Dockerfile
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
