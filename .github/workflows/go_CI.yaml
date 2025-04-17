@@ -1,0 +1,45 @@
+name: Go CI
+
+on
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+defaults:
+  run:
+    working-directory: go-server
+
+jobs:
+  BuildImage:
+    name: Build and push docker image
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    env: 
+      IMG_NAME: ${{var.IMAGE_NAME}}
+
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v4
+      
+      - name: Get docker metadata
+        id: metadata
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.IMG_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: /go-server/
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
