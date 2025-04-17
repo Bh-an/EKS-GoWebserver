@@ -9,7 +9,7 @@ defaults:
     working-directory: go-server
 
 jobs:
-  Test&Build:
+  Test_and_Build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
