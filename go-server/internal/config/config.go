@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 )
 
@@ -25,5 +26,6 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 
+	log.Printf("Config loaded sucessfully")
 	return config, nil
 }

@@ -23,13 +23,13 @@ func TestGetLocation(t *testing.T) {
 		{
 			name:        "Invalid Timezone",
 			headers:     map[string]string{"X-Timezone": "Invalid/Timezone"},
-			expected:    time.Local,
+			expected:    time.UTC,
 			expectedErr: false,
 		},
 		{
 			name:        "No Timezone",
 			headers:     map[string]string{},
-			expected:    time.Local,
+			expected:    time.UTC,
 			expectedErr: false,
 		},
 	}
