@@ -16,6 +16,12 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy_attachment" {
     policy_arn = data.aws_iam_policy.eksclusterpolicy.arn
 }
 
+# Policy attachment for AmazonEKSServicePolicy
+resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy_attachment" {
+    role    = aws_iam_role.cluster_role.name
+    policy_arn = data.aws_iam_policy.eksservicepolicy.arn
+}
+
 # IAM role for node groups
 resource "aws_iam_role" "node_group_role" {
     name = "${var.environment}-node-group-role"
