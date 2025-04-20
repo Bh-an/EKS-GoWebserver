@@ -23,3 +23,51 @@ go.work.sum
 
 # env file
 .env
+
+
+
+# --- Terraform Core Files within terraform/ ---
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfplan
+terraform/crash.log
+terraform/crash.*.log
+terraform/.terraform.tfstate.lock.info # Legacy lock file
+
+# --- Terraform Providers & Modules Cache within terraform/ ---
+terraform/.terraform/
+# --- !! IMPORTANT !! ---
+# DO NOT ignore the lock file within terraform/.terraform/
+!terraform/.terraform.lock.hcl
+
+# --- Potentially Sensitive Variable Files within terraform/ ---
+terraform/*.tfvars
+terraform/*.tfvars.json
+terraform/*.auto.tfvars
+terraform/*.auto.tfvars.json
+
+# --- Override Files within terraform/ ---
+terraform/override.tf
+terraform/override.tf.json
+terraform/*_override.tf
+terraform/*_override.tf.json
+
+# --- Terraform Cloud/Enterprise Credentials (usually in home dir, but ignore if placed locally) ---
+.terraformrc
+terraform.rc
+
+# --- Terragrunt Cache (if using Terragrunt within terraform/) ---
+terraform/.terragrunt-cache/
+terraform/*.hcl.lock
+
+# --- Platform / OS Specific (Apply globally) ---
+.DS_Store
+Thumbs.db
+
+# --- IDE / Editor Specific (Apply globally - Consider global .gitignore) ---
+.vscode/
+*.sw[a-p]
+.idea/
+
+# --- Other (Apply globally) ---
+*.log
