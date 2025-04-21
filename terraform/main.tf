@@ -51,3 +51,11 @@ module "cluster" {
     nodegroup_max_size      = var.nodegroup_max_size
     nodegroup_min_size      = var.nodegroup_min_size
 }
+
+module "oidc" {
+    depends_on = [module.cluster]
+
+    source                  = "./modules/oidc"
+    environment             = var.environment
+    eks_cluster             = module.cluster.eks_cluster
+}

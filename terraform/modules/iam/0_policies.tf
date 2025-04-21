@@ -15,6 +15,11 @@ data "aws_iam_policy" "eksclusterpolicy" {
     arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
+# EKS service policy
+data "aws_iam_policy" "eksservicepolicy" {
+  arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+}
+
 # EC2 (Node group) assume role policy
 data "aws_iam_policy_document" "nodegroup_assume_role_policy" {
     statement {

@@ -4,7 +4,7 @@ resource "aws_subnet" "public_subnet" {
     vpc_id                  = aws_vpc.vpc.id
     count                   = length(var.public_subnet_cidr)
     cidr_block              = element(var.public_subnet_cidr, count.index)
-    availability_zone       = element(var.availability_zones, 0)
+    availability_zone       = element(var.availability_zones, (count.index % length(var.availability_zones)))
     map_public_ip_on_launch = false
     tags = {
       Name                                              = "${var.platform}-${var.environment}-public-subnet-${element(var.availability_zones, (count.index % length(var.availability_zones)))}"
