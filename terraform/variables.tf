@@ -38,7 +38,7 @@ variable "cluster_name" {
 variable "instance_types" {
   type              = list  
   description       = "List of instance type allowed"
-  default           = ["t2.micro"]
+  default           = ["t3.small"]
 }
 
 variable "nodegroup_name" {
