@@ -16,8 +16,6 @@ jobs:
       terraform: ${{ steps.filter.outputs.terraform }}
       helmcharts: ${{ steps.filter.outputs.helmcharts }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
     - name: Filtering changes
       uses: dorny/paths-filter@v3
       id: filter
@@ -53,8 +51,14 @@ jobs:
       - name: Run tests
         run: go test ./internal/... -v
 
-      - name:
+      - name: Build Go
         run: go build -o go-server ./cmd/go-server/main.go
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        run : docker buildx build .
 
   Terraform:
     needs: Detect_changes
@@ -68,6 +72,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate build version
+        id: tf_semver
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          bump_each_commit: true
+          bump_each_commit_patch_pattern: "Merge pull request"
+          version_format: "${major}.${minor}.${patch}"
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          enable_prerelease_mode: true
+          change_path: "terraform/"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -86,6 +105,15 @@ jobs:
         with:
           path: ./terraform/
           backend_config_file: ./terraform/default.s3.tfbackend
+          label:
+            description: |
+              k8s infrastructure
+
+      - name: Comment versioning info
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            Current infrastructure version: ${{ steps.tf_semver.outputs.version }}
 
 
   Helmcharts:
