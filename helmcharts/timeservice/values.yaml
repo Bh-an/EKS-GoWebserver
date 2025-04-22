@@ -7,7 +7,7 @@ replicaCount: 1
 
 # Container
 image:
-  repository: bhan98/go-server
+  repository: ghcr.io/Bh-an/eks-gowebserver
   pullPolicy: IfNotPresent
   tag: ""
 
@@ -55,8 +55,8 @@ service:
     service.beta.kubernetes.io/aws-load-balancer-type: 'external',
     service.beta.kubernetes.io/aws-load-balancer-scheme: 'internet-facing',
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: 'ip',
-    service.beta.kubernetes.io/aws-load-balancer-subnets: 'subnet-01a08aa11b4c5bb9f, subnet-01f24ca7a98bec90a',
-    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: 'preserve_client_ip.enabled=true'
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: 'preserve_client_ip.enabled=true',
+    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: 'false'
   }  
 
 # Ingress
