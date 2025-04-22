@@ -16,9 +16,10 @@ USER 1001:1001
 
 WORKDIR /app
 
-# static binaries
+# Static binaries
 COPY --from=builder --chown=1001:1001 /app/go-server /app/go-server
 COPY --from=builder --chown=1001:1001 /app/config.json /app/config.json
 
+# Container port which app listens on
 EXPOSE 8080
 ENTRYPOINT ["/app/go-server"]
