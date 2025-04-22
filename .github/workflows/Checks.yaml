@@ -88,17 +88,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+
       - name: LBC chart test
-        uses: igabaydulin/helm-check-action@master
-        env:
-          CHART_LOCATION: ./aws-load-balancer-controller
-          CHART_VALUES: ./aws-load-balancer-controller/values.yaml
+        run: helm lint ./aws_load_balancer_controller/
 
       - name: Timeservice chart test
-        uses: igabaydulin/helm-check-action@master
-        env:
-          CHART_LOCATION: ./timeservice
-          CHART_VALUES: ./timeservice/values.yaml
+        run: helm lint ./timeservice/
 
 
 
