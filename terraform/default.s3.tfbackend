@@ -2,4 +2,3 @@
 
 bucket = "eks-goserver-tf-bucket" 
 key    = "tfstate/eks-gowerbserver.tfstate"
-region = "ap-south-1"

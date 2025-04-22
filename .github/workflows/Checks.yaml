@@ -81,7 +81,7 @@ jobs:
         uses: dflook/terraform-plan@v1
         with:
           path: . 
-          backend_config_file: default.s3.tfbackend
+          backend_config_file: ./default.s3.tfbackend
 
 
   Helmcharts:
