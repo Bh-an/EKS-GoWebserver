@@ -105,9 +105,7 @@ jobs:
         with:
           path: ./terraform/
           backend_config_file: ./terraform/default.s3.tfbackend
-          label:
-            description: |
-              k8s infrastructure
+          label: k8s_dev
 
       - name: Comment versioning info
         uses: thollander/actions-comment-pull-request@v3

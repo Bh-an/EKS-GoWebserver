@@ -99,14 +99,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Terraform plan
-        uses: dflook/terraform-plan@v1
+      - name: Terraform apply
+        uses: dflook/terraform-apply@v1
         with:
           path: ./terraform/
           backend_config_file: ./terraform/default.s3.tfbackend
-          label:
-            description: |
-              k8s infrastructure
+          label: k8s_dev
 
       - name: Calculate build version
         id: tf_semver
