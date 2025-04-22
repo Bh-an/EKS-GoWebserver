@@ -136,6 +136,7 @@ jobs:
       - name: Comment versioning info
         uses: thollander/actions-comment-pull-request@v3
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           message: |
             Merged Infrastructure version: ${{ steps.tf_semver.outputs.version }}
 

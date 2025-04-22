@@ -110,6 +110,7 @@ jobs:
       - name: Comment versioning info
         uses: thollander/actions-comment-pull-request@v3
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           message: |
             Current infrastructure version: ${{ steps.tf_semver.outputs.version }}
 
