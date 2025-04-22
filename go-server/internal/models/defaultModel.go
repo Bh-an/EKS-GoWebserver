@@ -1,3 +1,4 @@
+// Contains response models
 package models
 
 type TimeResponse struct {
