@@ -60,7 +60,7 @@ jobs:
       - name: Build image
         run : docker buildx build .
 
-  Terraform:
+  InfraPlan:
     needs: Detect_changes
     if: ${{ needs.Detect_changes.outputs.terraform == 'true' }}
     defaults:

@@ -22,6 +22,8 @@ locals {
   availaibility_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
 }
 
+# All modules are called from here, they should be added/removed in thsi file
+
 module "networking" {
   source               = "./modules/networking"
   region               = var.region
