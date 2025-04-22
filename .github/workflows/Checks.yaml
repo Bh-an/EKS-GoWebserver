@@ -72,6 +72,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Check directory
+        run: ls
+
       - name: Terraform validate
         uses: dflook/terraform-validate@v1
 
