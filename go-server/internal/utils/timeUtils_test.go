@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Testing function for getting current time in a timezone
 func TestGetCurrentTime(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -40,6 +41,7 @@ func TestGetCurrentTime(t *testing.T) {
 	}
 }
 
+// Testing function for loading time.location object
 func loadLocation(name string) *time.Location {
 	loc, err := time.LoadLocation(name)
 	if err != nil {

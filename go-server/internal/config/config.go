@@ -6,12 +6,14 @@ import (
 	"os"
 )
 
+// Config file structure
 type Config struct {
 	Server struct {
 		Port int `json:"port"`
 	} `json:"server"`
 }
 
+// Loads server config from file
 func LoadConfig() (*Config, error) {
 	file, err := os.Open("config.json")
 	if err != nil {

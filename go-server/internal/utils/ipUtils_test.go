@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Testing location parsing function
 func TestGetLocation(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -49,6 +50,7 @@ func TestGetLocation(t *testing.T) {
 	}
 }
 
+// Testing IP parsing function
 func TestGetIP(t *testing.T) {
 	tests := []struct {
 		name       string

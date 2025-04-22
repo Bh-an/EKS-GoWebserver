@@ -14,6 +14,7 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
+	// Handlers for url paths
 	http.HandleFunc("/", handlers.DefaultHandler)
 
 	log.Printf("Server listening on :%d\n", cfg.Server.Port)

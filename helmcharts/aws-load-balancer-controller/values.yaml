@@ -160,7 +160,7 @@ createIngressClassResource: false
 region:
 
 # The VPC ID for the Kubernetes cluster. Set this manually when your pods are unable to use the metadata service to determine this automatically
-vpcId: vpc-08c7ea7e963e2bdb3
+vpcId: "vpc-0f980e63b42e8998f"
 
 # This is alternative to vpcId. Set this when your pods are unable to use the metadata service to determine VPC automatically.
 vpcTags: {}
@@ -345,7 +345,7 @@ externalManagedTags: []
 enableEndpointSlices:
 
 # enableBackendSecurityGroup enables shared security group for backend traffic (default true)
-enableBackendSecurityGroup:
+enableBackendSecurityGroup: false
 
 # backendSecurityGroup specifies backend security group id (default controller auto create backend security group)
 backendSecurityGroup:

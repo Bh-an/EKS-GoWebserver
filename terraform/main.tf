@@ -9,6 +9,14 @@ terraform {
       version = ">= 4.0, <5.0"
     }
   }
+ 
+  backend "s3" {
+  bucket        = ""
+  key           = ""
+  region        = ""
+  encrypt       = true
+  use_lockfile  = true
+  }
 }
 
 locals {
