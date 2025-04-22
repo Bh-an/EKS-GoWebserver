@@ -8,7 +8,7 @@ on:
 jobs:
 
   Detect_changes:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: read
     outputs:
@@ -35,7 +35,7 @@ jobs:
     defaults:
       run:
         working-directory: ./go-server
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,7 +60,7 @@ jobs:
     defaults:
       run:
         working-directory: ./terraform
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -83,7 +83,7 @@ jobs:
     defaults:
       run:
         working-directory: ./helmcharts
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
