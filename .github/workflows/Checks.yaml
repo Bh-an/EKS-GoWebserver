@@ -61,6 +61,8 @@ jobs:
       run:
         working-directory: ./terraform
     runs-on: ubuntu-latest
+    env: 
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,9 +73,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
           aws-region: ${{ vars.AWS_REGION }}
-
-      - name: Check directory
-        run: ls
 
       - name: Terraform validate
         uses: dflook/terraform-validate@v1
