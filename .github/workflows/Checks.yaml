@@ -61,21 +61,30 @@ jobs:
       run:
         working-directory: ./terraform
     runs-on: ubuntu-latest
+    env: 
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: terraform init
-        uses: robertdebock/terraform-action@1.1.4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          action: init
-          directory: .
-          
-      - name: terraform validate
-        uses: robertdebock/terraform-action@1.1.4
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Terraform validate
+        uses: dflook/terraform-validate@v1
         with:
-          action: validate
-          directory: .
+          path: ./terraform/
+
+      - name: Terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: ./terraform/
+          backend_config_file: ./terraform/default.s3.tfbackend
+
 
   Helmcharts:
     needs: Detect_changes

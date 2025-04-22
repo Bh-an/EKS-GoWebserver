@@ -1,0 +1,4 @@
+# State config values
+
+bucket = "eks-goserver-tf-bucket" 
+key    = "tfstate/eks-gowerbserver.tfstate"
