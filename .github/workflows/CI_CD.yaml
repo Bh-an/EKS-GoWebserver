@@ -31,7 +31,7 @@ jobs:
   PublishImage:
     name: Build and push docker image to GHCR
     needs: Detect_changes
-    if: ${{ needs.changes.outputs.application == 'true' }}
+    if: ${{ needs.Detect_changes.outputs.application == 'true' }}
     runs-on: ubuntu-latest
     env: 
       IMG_NAME: ${{ vars.IMAGE_NAME }}
