@@ -43,7 +43,6 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
 
       - name: Calculate Image version
@@ -51,11 +50,13 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           bump_each_commit: true
+          bump_each_commit_patch_pattern: "Merge pull request"
           version_format: "${major}.${minor}.${patch}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
           enable_prerelease_mode: true
+          change_path: "go-server/"
 
       - name: Login to GCR
         uses: docker/login-action@v3
@@ -65,16 +66,79 @@ jobs:
           password: ${{ secrets.GH_TOKEN  }}
 
       - name: Build and push Docker image
-        if: steps.app_semver.outputs.changed == 'true'
+        if: steps.app_semver.outputs.changed == ' true'
         uses: docker/build-push-action@v2
         with:
           context: ./go-server/
           file: ./go-server/Dockerfile
           push: true
           tags: |
-            ${{ env.IMG_NAME }}:${{ steps.semver.outputs.version }}
+            ${{ env.IMG_NAME }}:${{ steps.app_semver.outputs.version }}
             ${{ github.ref_name == 'main' && format('{0}:latest', env.IMG_NAME) || '' }}
 
+  InfraBuild:
+    name: Building IaC changes to infrastructure
+    needs: Detect_changes
+    if: ${{ needs.Detect_changes.outputs.terraform == 'true' }}
+    run:
+        working-directory: ./terraform
+    runs-on: ubuntu-latest
+    env: 
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Terraform apply
+        uses: dflook/terraform-apply@v1
+        with:
+          path: ./terraform/
+          backend_config_file: ./terraform/default.s3.tfbackend
+          label: k8s_dev
+
+      - name: Calculate build version
+        id: tf_semver
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          bump_each_commit: true
+          bump_each_commit_patch_pattern: "Merge pull request"
+          version_format: "${major}.${minor}.${patch}"
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          enable_prerelease_mode: true
+          change_path: "terraform/"
+
+      - name: Get PR number of push
+        uses: actions/github-script@v6
+        id: pr_number
+        with:
+          script: |
+            return (   
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+          result-encoding: string
+        
+      - name: Comment versioning info
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          message: |
+            Merged Infrastructure version: ${{ steps.tf_semver.outputs.version }}
+
+            Infrastructure deployed :rocket:
+          pr-number: steps.pr_number.outputs.result
