@@ -16,6 +16,8 @@ jobs:
       terraform: ${{ steps.filter.outputs.terraform }}
       helmcharts: ${{ steps.filter.outputs.helmcharts }}
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
     - name: Filtering changes
       uses: dorny/paths-filter@v3
       id: filter
