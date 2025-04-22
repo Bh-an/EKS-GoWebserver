@@ -1,0 +1,78 @@
+name: Integration and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  Detect_changes:
+    runs-on: ubuntu-20.04
+    permissions:
+      pull-requests: read
+    outputs:
+      application: ${{ steps.filter.outputs.application }}
+      terraform: ${{ steps.filter.outputs.terraform }}
+      helmcharts: ${{ steps.filter.outputs.helmcharts }}
+    steps:
+    - name: Filtering changes
+      uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          application:
+            - 'go-server/**'
+          terraform:
+            - 'terraform/**'
+          terraform:
+            - 'helmcharts/**'
+
+  PublishImage:
+    name: Build and push docker image to GHCR
+    needs: Detect_changes
+    if: ${{ needs.changes.outputs.application == 'true' }}
+    runs-on: ubuntu-20.04
+    env: 
+      IMG_NAME: ${{ vars.IMAGE_NAME }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Calculate Image version
+        id: app_semver
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          bump_each_commit: true
+          version_format: "${major}.${minor}.${patch}"
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          enable_prerelease_mode: true
+
+      - name: Login to GCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN  }}
+
+      - name: Build and push Docker image
+        if: steps.app_semver.outputs.changed == 'true'
+        uses: docker/build-push-action@v2
+        with:
+          context: ./go-server/
+          file: ./go-server/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMG_NAME }}:${{ steps.semver.outputs.version }}
+            ${{ github.ref_name == 'main' && format('{0}:latest', env.IMG_NAME) || '' }}
+
+
+
+    

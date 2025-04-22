@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Function for getting current lime based on international/tz timezones (defaults to UTC)
 func GetCurrentTime(location *time.Location) string {
 
 	timeNow := time.Now().In(location)

@@ -1,0 +1,104 @@
+name: Code tests
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+
+  Detect_changes:
+    runs-on: ubuntu-20.04
+    permissions:
+      pull-requests: read
+    outputs:
+      application: ${{ steps.filter.outputs.application }}
+      terraform: ${{ steps.filter.outputs.terraform }}
+      helmcharts: ${{ steps.filter.outputs.helmcharts }}
+    steps:
+    - name: Filtering changes
+      uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          application:
+            - 'go-server/**'
+          terraform:
+            - 'terraform/**'
+          terraform:
+            - 'helmcharts/**'
+
+
+  GoApp:
+    needs: Detect_changes
+    if: ${{ needs.changes.outputs.application == 'true' }}
+    defaults:
+      run:
+        working-directory: ./go-server
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+
+      - name: Install dependencies
+        run: go get ...
+
+      - name: Run tests
+        run: go test ./internal/... -v
+
+      - name:
+        run: go build -o go-server ./cmd/go-server/main.go
+
+  Terraform:
+    needs: Detect_changes
+    if: ${{ needs.changes.outputs.terraform == 'true' }}
+    defaults:
+      run:
+        working-directory: ./terraform
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: terraform init
+        uses: robertdebock/terraform-action@1.1.4
+        with:
+          action: init
+          directory: .
+          
+      - name: terraform validate
+        uses: robertdebock/terraform-action@1.1.4
+        with:
+          action: validate
+          directory: .
+
+  Helmcharts:
+    needs: Detect_changes
+    if: ${{ needs.changes.outputs.helmcharts == 'true' }}
+    defaults:
+      run:
+        working-directory: ./helmcharts
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: LBC chart test
+        uses: igabaydulin/helm-check-action@master
+        env:
+          CHART_LOCATION: ./aws-load-balancer-controller
+          CHART_VALUES: ./aws-load-balancer-controller/values.yaml
+
+      - name: Timeservice chart test
+        uses: igabaydulin/helm-check-action@master
+        env:
+          CHART_LOCATION: ./timeservice
+          CHART_VALUES: ./timeservice/values.yaml
+
+
+

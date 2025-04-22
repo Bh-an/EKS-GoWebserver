@@ -1,3 +1,4 @@
+// Contains request/response handlers
 package handlers
 
 import (
@@ -8,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Handles '/' request/response
 func DefaultHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Request received at '/'")
