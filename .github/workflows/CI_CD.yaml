@@ -80,7 +80,8 @@ jobs:
     name: Building IaC changes to infrastructure
     needs: Detect_changes
     if: ${{ needs.Detect_changes.outputs.terraform == 'true' }}
-    run:
+    defaults:
+      run:
         working-directory: ./terraform
     runs-on: ubuntu-latest
     env: 
