@@ -77,11 +77,14 @@ jobs:
 
       - name: Terraform validate
         uses: dflook/terraform-validate@v1
+        with:
+          path: ./terraform/
 
       - name: Terraform plan
         uses: dflook/terraform-plan@v1
         with:
-          backend_config_file: ./default.s3.tfbackend
+          path: ./terraform/
+          backend_config_file: ./terraform/default.s3.tfbackend
 
 
   Helmcharts:
