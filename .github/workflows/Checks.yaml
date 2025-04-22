@@ -70,7 +70,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
-          aws-region: ${{ var.AWS_ACCESS_SECRET }}
+          aws-region: ${{ var.AWS_REGION }}
 
       - name: Terraform validate
         uses: dflook/terraform-validate@v1
