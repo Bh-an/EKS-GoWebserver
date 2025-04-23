@@ -10,7 +10,7 @@ variable "platform" {
 
 variable "environment" {
   description = "Resource Environment"
-  default     = "dev"
+  default     = "test"
 }
 
 variable "vpc_cidr" {

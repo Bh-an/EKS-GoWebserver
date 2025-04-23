@@ -1,3 +1,4 @@
+// Main project entrypoint
 package main
 
 import (
