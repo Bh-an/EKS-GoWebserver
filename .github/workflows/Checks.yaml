@@ -36,9 +36,24 @@ jobs:
       run:
         working-directory: ./go-server
     runs-on: ubuntu-latest
+    env: 
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Calculate Image version
+        id: app_semver
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          bump_each_commit: true
+          bump_each_commit_patch_pattern: (MERGE)"
+          version_format: "${major}.${minor}.${patch}"
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          enable_prerelease_mode: true
+          change_path: "go-server/"
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -60,6 +75,13 @@ jobs:
       - name: Build image
         run : docker buildx build .
 
+      - name: Comment versioning info
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          message: |
+            Current Application version: ${{ steps.app_semver.outputs.version }}
+
   InfraPlan:
     needs: Detect_changes
     if: ${{ needs.Detect_changes.outputs.terraform == 'true' }}
@@ -80,7 +102,7 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           bump_each_commit: true
-          bump_each_commit_patch_pattern: "Merge pull request"
+          bump_each_commit_patch_pattern: (PATCH-TF)"
           version_format: "${major}.${minor}.${patch}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"

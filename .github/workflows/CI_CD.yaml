@@ -50,7 +50,7 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           bump_each_commit: true
-          bump_each_commit_patch_pattern: "Merge pull request"
+          bump_each_commit_patch_pattern: (PATCH)
           version_format: "${major}.${minor}.${patch}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
@@ -111,7 +111,7 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           bump_each_commit: true
-          bump_each_commit_patch_pattern: "Merge pull request"
+          bump_each_commit_patch_pattern: "(PATCH-TF)"
           version_format: "${major}.${minor}.${patch}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
@@ -141,4 +141,4 @@ jobs:
             Merged Infrastructure version: ${{ steps.tf_semver.outputs.version }}
 
             Infrastructure deployed :rocket:
-          pr-number: steps.pr_number.outputs.result
+          pr-number: ${{ steps.pr_number.outputs.result }}
