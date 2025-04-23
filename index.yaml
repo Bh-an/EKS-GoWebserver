@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  timeservice:
+  - apiVersion: v2
+    appVersion: 1.0.1
+    created: "2025-04-23T10:18:19.88881622Z"
+    description: A Helm chart for Kubernetes
+    digest: 1e4d0cdc14de06a30507ffdce4f38c88aa039c4bf4c42ac58bb59f260e7d34f3
+    name: timeservice
+    type: application
+    urls:
+    - https://github.com/Bh-an/EKS-GoWebserver/releases/download/timeservice-1.0.5/timeservice-1.0.5.tgz
+    version: 1.0.5
+generated: "2025-04-23T10:18:19.888825216Z"
