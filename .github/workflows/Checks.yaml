@@ -154,7 +154,7 @@ jobs:
         uses: azure/setup-helm@v3
 
       - name: Timeservice chart test
-        run: helm lint ./helmchart/
+        run: helm lint ./helmchart/timeservice/
 
 
 
