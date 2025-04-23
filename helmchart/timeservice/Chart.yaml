@@ -1,6 +1,6 @@
 apiVersion: v2
 name: timeservice
-description: A Helm chart for Kubernetes
+description: Chart for go-webserver running a timeervice
 
 type: application
 

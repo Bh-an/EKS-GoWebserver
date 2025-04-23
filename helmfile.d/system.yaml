@@ -1,0 +1,20 @@
+# HelmFile for managing infra related releases on EKS
+
+repositories:
+
+  - name: eks_lb_controller
+    url: https://aws.github.io/eks-charts
+
+# Change installed to control deployment
+releases:
+
+  - name: aws-loadbalancer-controller
+    namespace: kube-system
+    chart: eks_lb_controller/aws-load-balancer-controller
+    version: "1.12.0"
+    values:
+      - ./values/lb_controller_values.yaml
+    installed: true
+    labels:
+      env: dev
+      component: system
