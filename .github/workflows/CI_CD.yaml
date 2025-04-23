@@ -14,7 +14,7 @@ jobs:
     outputs:
       application: ${{ steps.filter.outputs.application }}
       terraform: ${{ steps.filter.outputs.terraform }}
-      helmcharts: ${{ steps.filter.outputs.helmcharts }}
+      helmchart: ${{ steps.filter.outputs.helmchart }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
           terraform:
             - 'terraform/**'
           helmcharts:
-            - 'helmcharts/**'
+            - 'helmchart/**'
 
   PublishImage:
     name: Build and push docker image to GHCR
@@ -51,7 +51,7 @@ jobs:
         with:
           bump_each_commit: true
           bump_each_commit_patch_pattern: (PATCH)
-          version_format: "${major}.${minor}.${patch}-prerelease.${increment}"
+          version_format: "${major}.${minor}.${patch}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
@@ -112,7 +112,7 @@ jobs:
         with:
           bump_each_commit: true
           bump_each_commit_patch_pattern: "(PATCH-TF)"
-          version_format: "${major}.${minor}.${patch}-prerelease.${increment}"
+          version_format: "${major}.${minor}.${patch}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
@@ -139,6 +139,49 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN }}
           message: |
             Merged Infrastructure version: ${{ steps.tf_semver.outputs.version }}
+
+            Infrastructure deployed :rocket:
+          pr-number: ${{ steps.pr_number.outputs.result }}
+
+  HelmRelease:
+    needs: Detect_changes
+    if: ${{ needs.Detect_changes.outputs.helmchart == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        id: chartrelease
+        with:
+          pages_branch: helm-release
+          charts_dir: ./helmchart/
+        env:
+          CR_TOKEN: "${{ secrets.GH_TOKEN }}"
+
+      - name: Get PR number of push
+        uses: actions/github-script@v6
+        id: pr_number
+        with:
+          script: |
+            return (   
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+          result-encoding: string
+        
+      - name: Comment versioning info
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          message: |
+            Released chart for version: ${{ steps.chartrelease.outputs.chart_version }}
 
             Infrastructure deployed :rocket:
           pr-number: ${{ steps.pr_number.outputs.result }}

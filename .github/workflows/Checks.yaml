@@ -14,7 +14,7 @@ jobs:
     outputs:
       application: ${{ steps.filter.outputs.application }}
       terraform: ${{ steps.filter.outputs.terraform }}
-      helmcharts: ${{ steps.filter.outputs.helmcharts }}
+      helmchart: ${{ steps.filter.outputs.helmchart }}
     steps:
     - name: Filtering changes
       uses: dorny/paths-filter@v3
@@ -25,8 +25,8 @@ jobs:
             - 'go-server/**'
           terraform:
             - 'terraform/**'
-          helmcharts:
-            - 'helmcharts/**'
+          helmchart:
+            - 'helmchart/**'
 
 
   GoApp:
@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Calculate Image version
         id: app_semver
@@ -138,17 +140,16 @@ jobs:
             Current infrastructure version: ${{ steps.tf_semver.outputs.version }}
 
 
-  Helmcharts:
+  HelmRelease:
     needs: Detect_changes
-    if: ${{ needs.Detect_changes.outputs.helmcharts == 'true' }}
-    defaults:
-      run:
-        working-directory: ./helmcharts
+    if: ${{ needs.Detect_changes.outputs.helmchart == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
+      
       - name: Set up Helm
         uses: azure/setup-helm@v3
 

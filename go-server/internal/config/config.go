@@ -21,6 +21,7 @@ func LoadConfig() (*Config, error) {
 	}
 	defer file.Close()
 
+	// Config file expected in JSON
 	decoder := json.NewDecoder(file)
 	config := &Config{}
 	err = decoder.Decode(config)
