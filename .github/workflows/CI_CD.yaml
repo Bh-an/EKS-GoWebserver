@@ -147,6 +147,8 @@ jobs:
     needs: Detect_changes
     if: ${{ needs.Detect_changes.outputs.helmchart == 'true' }}
     runs-on: ubuntu-latest
+    permissions:
+      contens: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -165,7 +167,7 @@ jobs:
           pages_branch: helm-release
           charts_dir: ./helmchart/
         env:
-          CR_TOKEN: "${{ secrets.GH_TOKEN }}"
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Get PR number of push
         uses: actions/github-script@v6
