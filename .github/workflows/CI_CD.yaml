@@ -183,5 +183,5 @@ jobs:
           message: |
             Released chart for version: ${{ steps.chartrelease.outputs.chart_version }}
 
-            Infrastructure deployed :rocket:
+            Helm-chart released :white_tick:
           pr-number: ${{ steps.pr_number.outputs.result }}
