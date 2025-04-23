@@ -153,6 +153,11 @@ jobs:
         with:
           fetch-depth: 0
       
+      - name: Configure Git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+      
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         id: chartrelease
