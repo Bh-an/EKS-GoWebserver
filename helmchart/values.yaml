@@ -7,7 +7,7 @@ replicaCount: 1
 
 # Container
 image:
-  repository: ghcr.io/Bh-an/eks-gowebserver
+  repository: ghcr.io/bh-an/eks-gowebserver
   pullPolicy: IfNotPresent
   tag: ""
 
