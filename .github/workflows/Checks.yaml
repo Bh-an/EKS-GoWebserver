@@ -49,7 +49,7 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           bump_each_commit: true
-          bump_each_commit_patch_pattern: (PATCH)"
+          bump_each_commit_patch_pattern: "(PATCH)"
           version_format: "${major}.${minor}.${patch}-prerelease.${increment}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"

@@ -27,7 +27,7 @@ jobs:
             - 'go-server/**'
           terraform:
             - 'terraform/**'
-          helmcharts:
+          helmchart:
             - 'helmchart/**'
 
   PublishImage:
