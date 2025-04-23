@@ -205,16 +205,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Setup kube    
-        uses: azure/setup-kubectl@v4
-        with:
-          version: '1.31.4'
-
       - name: Set kube context
         run: aws eks --region ${{ vars.AWS_REGION }}  update-kubeconfig --name ${{ vars.CLUSTER_NAME }}
 
       - name: Apply CRDs
-        run: kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
   
   SystemDiff:
     needs: [DeploymentChanges, UpdateDependencies]
