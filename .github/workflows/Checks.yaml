@@ -189,9 +189,35 @@ jobs:
             - 'helmfile.d/system.yaml'
           app:
             - 'helmfile.d/app.yaml'
-
-  SystemDiff:
+            
+  UpdateDependencies:
     needs: DeploymentChanges
+    if: ${{ needs.DeploymentChanges.outputs.system == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup kube    
+        uses: azure/setup-kubectl@v4
+        with:
+          version: '1.31.4'
+
+      - name: Set kube context
+        run: aws eks --region ${{ vars.AWS_REGION }}  update-kubeconfig --name ${{ vars.CLUSTER_NAME }}
+
+      - name: Apply CRDs
+        run: kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+  
+  SystemDiff:
+    needs: [DeploymentChanges, UpdateDependencies]
     if: ${{ needs.DeploymentChanges.outputs.system == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -213,7 +239,7 @@ jobs:
         id: helm_diff
         with:
           helmfile-version: 'v0.170.0'
-          helm-version: 'v3.17.0'
+          helm-version: 'v3.17.2'
           helm-plugins: >
             https://github.com/databus23/helm-diff
           helmfile-args: -l component=system diff
@@ -253,7 +279,7 @@ jobs:
         id: helm_diff
         with:
           helmfile-version: 'v0.170.0'
-          helm-version: 'v3.17.0'
+          helm-version: 'v3.17.2'
           helm-plugins: >
             https://github.com/databus23/helm-diff
           helmfile-args: -l component=app diff

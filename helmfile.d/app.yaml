@@ -9,15 +9,13 @@ repositories:
 releases:
   
   - name: timeservice
-    needs: 
-      - kube-system/aws-loadbalancer-controller
     namespace: webservices
     chart: timeservice_app/timeservice
     version: "1.0.5"
     values:
       - ./values/timeservice_values.yaml
     createNamespace: true
-    installed: true
+    installed: false
     labels:
       env: dev
       component: app     
