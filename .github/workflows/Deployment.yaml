@@ -191,7 +191,7 @@ jobs:
 
             <details>
             <summary>Diff output</summary>
-            {{ steps.helm_diff.outputs.helmfile-stdout }}            
+            ${{ steps.helm_diff.outputs.helmfile-stdout }}            
             </details>
           pr-number: ${{ steps.pr_number.outputs.result }}
 
@@ -246,6 +246,6 @@ jobs:
 
             <details>
             <summary>Diff output</summary>
-            {{ steps.helm_diff.outputs.helmfile-stdout }}            
+            ${{ steps.helm_diff.outputs.helmfile-stdout }}            
             </details>
           pr-number: ${{ steps.pr_number.outputs.result }}

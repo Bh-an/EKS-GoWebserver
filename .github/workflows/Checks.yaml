@@ -248,7 +248,7 @@ jobs:
 
             <details>
             <summary>Diff output</summary>
-            {{ steps.helm_diff.outputs.helmfile-stdout }}            
+            ${{ steps.helm_diff.outputs.helmfile-stdout }}            
             </details>
 
   AppDiff:
@@ -288,7 +288,7 @@ jobs:
 
             <details>
             <summary>Diff output</summary>
-            {{ steps.helm_diff.outputs.helmfile-stdout }}            
+            ${{ steps.helm_diff.outputs.helmfile-stdout }}            
             </details>
 
 
