@@ -153,11 +153,8 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v3
 
-      - name: LBC chart test
-        run: helm lint ./aws-load-balancer-controller/
-
       - name: Timeservice chart test
-        run: helm lint ./timeservice/
+        run: helm lint ./helmchart/
 
 
 
