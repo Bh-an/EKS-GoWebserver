@@ -1,4 +1,4 @@
-name: Integration and Deploy
+name: Integration
 
 on:
   push:
@@ -25,8 +25,6 @@ jobs:
         filters: |
           application:
             - 'go-server/**'
-          terraform:
-            - 'terraform/**'
           helmchart:
             - 'helmchart/**'
 
@@ -75,74 +73,6 @@ jobs:
             ${{ env.IMG_NAME }}:${{ steps.app_semver.outputs.version }}
             ${{ github.ref_name == 'main' && format('{0}:latest', env.IMG_NAME) || '' }}
 
-  InfraBuild:
-    name: Building IaC changes to infrastructure
-    needs: Detect_changes
-    if: ${{ needs.Detect_changes.outputs.terraform == 'true' }}
-    defaults:
-      run:
-        working-directory: ./terraform
-    runs-on: ubuntu-latest
-    env: 
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-    steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
-          aws-region: ${{ vars.AWS_REGION }}
-
-      - name: Terraform apply
-        uses: dflook/terraform-apply@v1
-        with:
-          path: ./terraform/
-          backend_config_file: ./terraform/default.s3.tfbackend
-          label: k8s_dev
-
-      - name: Calculate build version
-        id: tf_semver
-        uses: paulhatch/semantic-version@v5.4.0
-        with:
-          bump_each_commit: true
-          bump_each_commit_patch_pattern: "(PATCH-TF)"
-          version_format: "${major}.${minor}.${patch}"
-          tag_prefix: "v"
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          enable_prerelease_mode: true
-          change_path: "terraform/"
-
-      - name: Get PR number of push
-        uses: actions/github-script@v6
-        id: pr_number
-        with:
-          script: |
-            return (   
-                await github.rest.repos.listPullRequestsAssociatedWithCommit({
-                  commit_sha: context.sha,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                })
-              ).data[0].number;
-          result-encoding: string
-        
-      - name: Comment versioning info
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          message: |
-            Merged Infrastructure version: ${{ steps.tf_semver.outputs.version }}
-
-            Infrastructure deployed :rocket:
-          pr-number: ${{ steps.pr_number.outputs.result }}
-
   HelmRelease:
     needs: Detect_changes
     if: ${{ needs.Detect_changes.outputs.helmchart == 'true' }}
@@ -162,7 +92,6 @@ jobs:
       
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
-        id: chartrelease
         with:
           pages_branch: helm-release
           charts_dir: ./helmchart/
@@ -182,13 +111,20 @@ jobs:
                 })
               ).data[0].number;
           result-encoding: string
+
+      - name: Get new version
+        uses: jacobtomlinson/gha-read-helm-chart@master
+        id: chartinfo
+        with:
+          path: ./helmchart/timeservice/
         
       - name: Comment versioning info
         uses: thollander/actions-comment-pull-request@v3
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           message: |
-            Released chart for version: ${{ steps.chartrelease.outputs.chart_version }}
+            Released chart for version: ${{ steps.chartinfo.outputs.version }}
+            Application version: ${{ steps.chartinfo.outputs.appVersion }}
 
-            Helm-chart released :white_tick:
+            Helm-chart released :tada:
           pr-number: ${{ steps.pr_number.outputs.result }}

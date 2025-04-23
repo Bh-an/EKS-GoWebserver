@@ -1,0 +1,23 @@
+# HelmFile for managing app related releases on EKS
+
+repositories:
+  
+  - name: timeservice_app
+    url: https://bh-an.github.io/EKS-GoWebserver/
+
+# Change installed to control deployment
+releases:
+  
+  - name: timeservice
+    needs: 
+      - kube-system/aws-loadbalancer-controller
+    namespace: webservices
+    chart: timeservice_app/timeservice
+    version: "1.0.5"
+    values:
+      - ./values/timeservice_values.yaml
+    createNamespace: true
+    installed: true
+    labels:
+      env: dev
+      component: app     

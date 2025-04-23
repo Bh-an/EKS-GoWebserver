@@ -1,120 +1,47 @@
-name: Code tests
+name: Deployment
 
 on:
-  pull_request:
-    branches:
-    - main
+  push:
+    branches: main
 
 jobs:
 
-  DetectChanges:
+  Detect_changes:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
     outputs:
-      application: ${{ steps.filter.outputs.application }}
       terraform: ${{ steps.filter.outputs.terraform }}
-      helmchart: ${{ steps.filter.outputs.helmchart }}
-      deployment: ${{ steps.filter.outputs.deployment }}
+      deploy_system: ${{ steps.filter.outputs.deploy_system }}
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
     - name: Filtering changes
       uses: dorny/paths-filter@v3
       id: filter
       with:
         filters: |
-          application:
-            - 'go-server/**'
           terraform:
             - 'terraform/**'
-          helmchart:
-            - 'helmchart/**'
           deployment:
             - 'helmfile.d/**'
 
-
-  TestApp:
-    needs: DetectChanges
-    if: ${{ needs.DetectChanges.outputs.application == 'true' }}
-    defaults:
-      run:
-        working-directory: ./go-server
-    runs-on: ubuntu-latest
-    env: 
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Calculate Image version
-        id: app_semver
-        uses: paulhatch/semantic-version@v5.4.0
-        with:
-          bump_each_commit: true
-          bump_each_commit_patch_pattern: "(PATCH)"
-          version_format: "${major}.${minor}.${patch}-prerelease.${increment}"
-          tag_prefix: "v"
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          enable_prerelease_mode: true
-          change_path: "go-server/"
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.24.x'
-
-      - name: Install dependencies
-        run: go get ...
-
-      - name: Run tests
-        run: go test ./internal/... -v
-
-      - name: Build Go
-        run: go build -o go-server ./cmd/go-server/main.go
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build image
-        run : docker buildx build .
-
-      - name: Comment versioning info
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          message: |
-            Current Application version: ${{ steps.app_semver.outputs.version }}
-
-  InfraPlan:
-    needs: DetectChanges
-    if: ${{ needs.DetectChanges.outputs.terraform == 'true' }}
+  InfraBuild:
+    name: Building IaC changes to infrastructure
+    needs: Detect_changes
+    if: ${{ needs.Detect_changes.outputs.terraform == 'true' }}
     defaults:
       run:
         working-directory: ./terraform
     runs-on: ubuntu-latest
     env: 
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
     steps:
-      - name: Checkout
+      - name: Checkout main branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Calculate build version
-        id: tf_semver
-        uses: paulhatch/semantic-version@v5.4.0
-        with:
-          bump_each_commit: true
-          bump_each_commit_patch_pattern: (PATCH-TF)"
-          version_format: "${major}.${minor}.${patch}-prerelease.${increment}"
-          tag_prefix: "v"
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          enable_prerelease_mode: true
-          change_path: "terraform/"
-          namespace: tf
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -123,52 +50,49 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Terraform validate
-        uses: dflook/terraform-validate@v1
-        with:
-          path: ./terraform/
-
-      - name: Terraform plan
-        uses: dflook/terraform-plan@v1
+      - name: Terraform apply
+        uses: dflook/terraform-apply@v1
         with:
           path: ./terraform/
           backend_config_file: ./terraform/default.s3.tfbackend
           label: k8s_dev
 
-      - name: Comment versioning info
-        uses: thollander/actions-comment-pull-request@v3
+      - name: Calculate build version
+        id: tf_semver
+        uses: paulhatch/semantic-version@v5.4.0
         with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          message: |
-            Current infrastructure version: ${{ steps.tf_semver.outputs.version }}
+          bump_each_commit: true
+          bump_each_commit_patch_pattern: "(PATCH-TF)"
+          version_format: "${major}.${minor}.${patch}"
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          enable_prerelease_mode: true
+          change_path: "terraform/"
 
-  
-  HelmLint:
-    needs: DetectChanges
-    if: ${{ needs.DetectChanges.outputs.helmchart == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
-
-      - name: Timeservice chart test
-        run: helm lint ./helmchart/timeservice/
-
-      - name: Get new version
-        uses: jacobtomlinson/gha-read-helm-chart@master
-        id: chartinfo
+      - name: Get PR number of push
+        uses: actions/github-script@v6
+        id: pr_number
         with:
-          path: ./helmchart/timeservice/
+          script: |
+            return (   
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+          result-encoding: string
         
       - name: Comment versioning info
         uses: thollander/actions-comment-pull-request@v3
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           message: |
-            Linted chart version: ${{ steps.chartinfo.outputs.version }}
+            Merged Infrastructure version: ${{ steps.tf_semver.outputs.version }}
+
+            Infrastructure deployed :rocket:
+          pr-number: ${{ steps.pr_number.outputs.result }}
 
   DeploymentChanges:
     needs: DetectChanges
@@ -216,7 +140,20 @@ jobs:
           helm-version: 'v3.17.0'
           helm-plugins: >
             https://github.com/databus23/helm-diff
-          helmfile-args: -l component=system diff
+          helmfile-args: -l component=system apply
+      - name: Get PR number of push
+        uses: actions/github-script@v6
+        id: pr_number
+        with:
+          script: |
+            return (   
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+          result-encoding: string
 
       - name: Comment Diff STD-OUT
         uses: thollander/actions-comment-pull-request@v3
@@ -229,6 +166,7 @@ jobs:
             <summary>Diff output</summary>
             {{ steps.helm_diff.outputs.helmfile-stdout }}            
             </details>
+          pr-number: ${{ steps.pr_number.outputs.result }}
 
   AppDiff:
     needs: DeploymentChanges
@@ -256,7 +194,21 @@ jobs:
           helm-version: 'v3.17.0'
           helm-plugins: >
             https://github.com/databus23/helm-diff
-          helmfile-args: -l component=app diff
+          helmfile-args: -l component=app apply
+
+      - name: Get PR number of push
+        uses: actions/github-script@v6
+        id: pr_number
+        with:
+          script: |
+            return (   
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+          result-encoding: string
 
       - name: Comment Diff STD-OUT
         uses: thollander/actions-comment-pull-request@v3
@@ -269,6 +221,4 @@ jobs:
             <summary>Diff output</summary>
             {{ steps.helm_diff.outputs.helmfile-stdout }}            
             </details>
-
-
-          
+          pr-number: ${{ steps.pr_number.outputs.result }}
