@@ -148,7 +148,7 @@ jobs:
     if: ${{ needs.Detect_changes.outputs.helmchart == 'true' }}
     runs-on: ubuntu-latest
     permissions:
-      contens: write
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
