@@ -51,7 +51,7 @@ jobs:
         with:
           bump_each_commit: true
           bump_each_commit_patch_pattern: (PATCH)
-          version_format: "${major}.${minor}.${patch}"
+          version_format: "${major}.${minor}.${patch}-prerelease.${increment}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
@@ -112,7 +112,7 @@ jobs:
         with:
           bump_each_commit: true
           bump_each_commit_patch_pattern: "(PATCH-TF)"
-          version_format: "${major}.${minor}.${patch}"
+          version_format: "${major}.${minor}.${patch}-prerelease.${increment}"
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
