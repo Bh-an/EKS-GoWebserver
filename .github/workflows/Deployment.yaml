@@ -51,6 +51,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Terraform apply
+        id: tf_apply
         uses: dflook/terraform-apply@v1
         with:
           path: ./terraform/
@@ -90,6 +91,10 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN }}
           message: |
             Merged Infrastructure version: ${{ steps.tf_semver.outputs.version }}
+
+            VPC ID: ${{ steps.tf_apply.outputs.vpc_id }}
+
+            LB role arn: ${{ steps.tf_apply.outputs.load_balancer_controller_role_arn }}
 
             Infrastructure deployed :rocket:
           pr-number: ${{ steps.pr_number.outputs.result }}
