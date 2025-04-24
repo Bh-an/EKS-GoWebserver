@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  Detect_changes:
+  DetectChanges:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
@@ -28,8 +28,8 @@ jobs:
 
   InfraBuild:
     name: Building IaC changes to infrastructure
-    needs: Detect_changes
-    if: ${{ needs.Detect_changes.outputs.terraform == 'true' }}
+    needs: DetectChanges
+    if: ${{ needs.DetectChanges.outputs.terraform == 'true' }}
     defaults:
       run:
         working-directory: ./terraform
