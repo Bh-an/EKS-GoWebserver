@@ -16,6 +16,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      
     - name: Filtering changes
       uses: dorny/paths-filter@v3
       id: filter
@@ -109,6 +110,9 @@ jobs:
       system: ${{ steps.filter.outputs.system }}
       app: ${{ steps.filter.outputs.app }}
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Filtering changes
       uses: dorny/paths-filter@v3
       id: filter
