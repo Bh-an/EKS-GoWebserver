@@ -16,7 +16,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
+
     - name: Filtering changes
       uses: dorny/paths-filter@v3
       id: filter
@@ -139,11 +139,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
           aws-region: ${{ vars.AWS_REGION }}
-
-      - name: Setup kube    
-        uses: azure/setup-kubectl@v4
-        with:
-          version: '1.31.4'
 
       - name: Set kube context
         run: aws eks --region ${{ vars.AWS_REGION }}  update-kubeconfig --name ${{ vars.CLUSTER_NAME }}
