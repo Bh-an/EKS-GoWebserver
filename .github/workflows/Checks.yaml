@@ -187,8 +187,10 @@ jobs:
         filters: |
           system:
             - 'helmfile.d/system.yaml'
+            - 'helmfile.d/values/lb_controller_values.yaml'
           app:
             - 'helmfile.d/app.yaml'
+            - 'helmfile.d/values/timeservice_values.yaml'
             
   UpdateDependencies:
     needs: DeploymentChanges

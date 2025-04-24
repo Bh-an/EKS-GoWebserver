@@ -16,7 +16,7 @@ serviceAccount:
   imagePullSecrets:
 
 clusterName: default_cluster
-vpcId: "vpc-0e6835c4d7ad26ad4"
+vpcId: "vpc-07885ba726699057d"
 
 # Enabling this creates resources that will not be managed by TF and
 # stay even after uninstalling release. This can error out your tf destroy
