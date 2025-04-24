@@ -8,7 +8,7 @@ image:
 
 serviceAccount:
   create: true
-  # Give role created by OIDC in terraform
+  # Give role created by OIDC in terraform, available in tf outputs
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::774305577388:role/dev-cloud-controller
   name: aws-load-balancer-controller
