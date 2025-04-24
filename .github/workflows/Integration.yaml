@@ -73,6 +73,28 @@ jobs:
             ${{ env.IMG_NAME }}:${{ steps.app_semver.outputs.version }}
             ${{ github.ref_name == 'main' && format('{0}:latest', env.IMG_NAME) || '' }}
 
+      - name: Get PR number of push
+        uses: actions/github-script@v6
+        id: pr_number
+        with:
+          script: |
+            return (   
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+          result-encoding: string
+        
+      - name: Comment versioning info
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          message: |
+            Pushed image: ${{ env.IMG_NAME }}:${{ steps.app_semver.outputs.version }}
+            
+          pr-number: ${{ steps.pr_number.outputs.result }}
   HelmRelease:
     needs: Detect_changes
     if: ${{ needs.Detect_changes.outputs.helmchart == 'true' }}
@@ -95,6 +117,7 @@ jobs:
         with:
           pages_branch: helm-release
           charts_dir: ./helmchart/
+          skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
