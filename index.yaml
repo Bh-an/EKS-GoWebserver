@@ -11,4 +11,14 @@ entries:
     urls:
     - https://github.com/Bh-an/EKS-GoWebserver/releases/download/timeservice-1.0.5/timeservice-1.0.5.tgz
     version: 1.0.5
-generated: "2025-04-23T10:18:19.888825216Z"
+  - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2025-04-24T06:44:07.907741079Z"
+    description: Chart for go-webserver running a timeervice
+    digest: 7097f0232c4a5e1d0a136a445c250dc4a50ce8919aee177dea54302abd189095
+    name: timeservice
+    type: application
+    urls:
+    - https://github.com/Bh-an/EKS-GoWebserver/releases/download/timeservice-1.0.4/timeservice-1.0.4.tgz
+    version: 1.0.4
+generated: "2025-04-24T06:44:07.907747781Z"
