@@ -22,5 +22,3 @@ vpcId: "vpc-07885ba726699057d"
 # stay even after uninstalling release. This can error out your tf destroy
 # Set to true if using your own k8s cluster with permanent VPC
 enableBackendSecurityGroup: false
-  
-# enableCertManager: true
