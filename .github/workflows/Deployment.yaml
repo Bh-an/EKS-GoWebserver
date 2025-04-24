@@ -116,8 +116,10 @@ jobs:
         filters: |
           system:
             - 'helmfile.d/system.yaml'
+            - 'helmfile.d/values/lb_controller_values.yaml'
           app:
             - 'helmfile.d/app.yaml'
+            - 'helmfile.d/values/timeservice_values.yaml'
 
   UpdateDependencies:
     needs: DeploymentChanges
@@ -196,7 +198,9 @@ jobs:
 
             <details>
             <summary>Diff output</summary>
-            ${{ steps.helm_diff.outputs.helmfile-stdout }}            
+            '''
+            ${{ steps.helm_diff.outputs.helmfile-stdout }} 
+            '''           
             </details>
           pr-number: ${{ steps.pr_number.outputs.result }}
 
@@ -251,6 +255,8 @@ jobs:
 
             <details>
             <summary>Diff output</summary>
-            ${{ steps.helm_diff.outputs.helmfile-stdout }}            
+            '''
+            ${{ steps.helm_diff.outputs.helmfile-stdout }} 
+            '''           
             </details>
           pr-number: ${{ steps.pr_number.outputs.result }}
