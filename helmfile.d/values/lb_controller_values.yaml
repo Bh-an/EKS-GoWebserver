@@ -16,7 +16,7 @@ serviceAccount:
   imagePullSecrets:
 
 # These values need to be added for first setup, found in terraform output
-# or the AWS console
+# or the AWS console unser EKS and VPC
 clusterName: default_cluster
 vpcId: "vpc-07885ba726699057d"
 
