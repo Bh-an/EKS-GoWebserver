@@ -196,10 +196,15 @@ jobs:
             Ran helmfile diff for system releases
 
             <details>
-            <summary>Diff output</summary>
+            
+            <summary>Apply output</summary>
+            
             ```
+            
             ${{ steps.helm_diff.outputs.helmfile-stdout }} 
+            
             ```           
+            
             </details>
           pr-number: ${{ steps.pr_number.outputs.result }}
 
@@ -253,9 +258,14 @@ jobs:
             Ran helmfile diff for app releases
 
             <details>
-            <summary>Diff output</summary>
+            
+            <summary>Apply output</summary>
+
             ```
+
             ${{ steps.helm_diff.outputs.helmfile-stdout }} 
+
             ```           
+            
             </details>
           pr-number: ${{ steps.pr_number.outputs.result }}

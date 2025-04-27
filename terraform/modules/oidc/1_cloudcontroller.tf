@@ -23,7 +23,7 @@ resource "aws_iam_role" "aws_cloud_controller_manager" {
   name               = "${var.environment}-cloud-controller"
 }
 
-resource "aws_iam_role_policy_attachment" "eks_cluster_autoscaler_attach" {
+resource "aws_iam_role_policy_attachment" "aws_cloud_controller_attach" {
   role       = aws_iam_role.aws_cloud_controller_manager.name
   policy_arn = aws_iam_policy.aws_cloud_controller.arn
 }
