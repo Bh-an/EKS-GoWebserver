@@ -167,7 +167,7 @@ jobs:
       
       - name: System deployment
         uses: helmfile/helmfile-action@v2.0.4
-        id: helm_diff
+        id: helm_apply
         with:
           helmfile-version: 'v0.170.0'
           helm-version: 'v3.17.2'
@@ -193,7 +193,7 @@ jobs:
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           message: |
-            Ran helmfile diff for system releases
+            Ran helmfile apply for system releases
 
             <details>
             
@@ -201,7 +201,7 @@ jobs:
             
             ```
             
-            ${{ steps.helm_diff.outputs.helmfile-stdout }} 
+            ${{ steps.helm_apply.outputs.helmfile-stdout }} 
             
             ```           
             
@@ -228,7 +228,7 @@ jobs:
       
       - name: App deployment
         uses: helmfile/helmfile-action@v2.0.4
-        id: helm_diff
+        id: helm_apply
         with:
           helmfile-version: 'v0.170.0'
           helm-version: 'v3.17.2'
@@ -255,7 +255,7 @@ jobs:
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           message: |
-            Ran helmfile diff for app releases
+            Ran helmfile apply for app releases
 
             <details>
             
@@ -263,7 +263,7 @@ jobs:
 
             ```
 
-            ${{ steps.helm_diff.outputs.helmfile-stdout }} 
+            ${{ steps.helm_apply.outputs.helmfile-stdout }} 
 
             ```           
             
