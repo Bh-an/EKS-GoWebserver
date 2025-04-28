@@ -10,7 +10,7 @@ serviceAccount:
   create: true
   # Give role created by OIDC in terraform, available in tf outputs
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::774305577388:role/dev-cloud-controller
+    eks.amazonaws.com/role-arn: arn:aws:iam::774305577388:role/test-cloud-controller
   name: aws-load-balancer-controller
   automountServiceAccountToken: true
   imagePullSecrets:
@@ -18,7 +18,7 @@ serviceAccount:
 # These values need to be added for first setup, found in terraform output
 # or the AWS console unser EKS and VPC
 clusterName: default_cluster
-vpcId: "vpc-07885ba726699057d"
+vpcId: "vpc-00a168df6bd925f40"
 
 # Enabling this creates resources that will not be managed by TF and
 # stay even after uninstalling release. This can error out your tf destroy

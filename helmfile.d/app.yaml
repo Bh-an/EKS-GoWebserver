@@ -11,11 +11,11 @@ releases:
   - name: timeservice
     namespace: webservices
     chart: timeservice_app/timeservice
-    version: "1.0.5"
+    version: "1.0.6"
     values:
       - ./values/timeservice_values.yaml
     createNamespace: true
-    installed: false
+    installed: true
     labels:
       env: dev
       component: app     
