@@ -1,5 +1,5 @@
 # EKS-GoWebserver
-*Combined repository for deploying a Go-app on an EKS cluster initialised through Terraform and managed with Helm. For a detailed breakdown of the implementation within the directory to support continued development and further customisation along with testing/deployment workflows, please see ABOUT.*
+*Combined repository for deploying a Go-app on an EKS cluster initialised through Terraform and managed with Helm. For a detailed breakdown of the implementation within the directory to support continued development and further customisation along with testing/deployment workflows, please see [docs](Docs/README.md).*
 
 ---
 ## Contents 

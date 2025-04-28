@@ -1,0 +1,44 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DisassociateAddress",
+                "ec2:DeleteSubnet",
+                "iam:UntagRole",
+                "ec2:DeleteTags",
+                "iam:DeletePolicy",
+                "s3:ListBucket",
+                "ec2:DeleteRouteTable",
+                "iam:DetachRolePolicy",
+                "iam:DeleteRolePolicy",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:DeleteInternetGateway",
+                "s3:DeleteObject",
+                "iam:DeleteOpenIDConnectProvider",
+                "ec2:ReleaseAddress",
+                "ec2:DeleteLaunchTemplate",
+                "eks:UntagResource",
+                "ec2:DeleteRoute",
+                "ec2:DeleteNetworkInterface",
+                "iam:DeleteRole",
+                "ec2:DetachInternetGateway",
+                "ec2:DisassociateRouteTable",
+                "ec2:RevokeSecurityGroupIngress",
+                "eks:DeleteCluster",
+                "s3:PutObject",
+                "s3:GetObject",
+                "eks:DeleteNodegroup",
+                "ec2:DeleteSecurityGroup",
+                "iam:UntagPolicy",
+                "ec2:DeleteNatGateway",
+                "iam:DeleteServiceLinkedRole",
+                "iam:UntagOpenIDConnectProvider",
+                "ec2:DeleteVpc"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
