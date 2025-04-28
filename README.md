@@ -118,8 +118,10 @@
 
         - Create two [new policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create-console.html#access_policies_create-json-editor) named ```tf_create``` and ```tf_destroy``` using the two policy documents available in ```docs/policies/```. Attach these to the 'provisioners' group you created previously.
 
-        > [!WARNING]  
-        > The policies use the '*' wildcard to target resources. This is generally not recommended but because we are deploying everyhting together it is much easier. Please read and understand both the terraform and the permissions it is given. 
+> [!WARNING]
+> The policies use the '*' wildcard to target resources. This is generally not recommended but because we are deploying everyhting together it is much easier.
+> Please read and understand both the terraform templates and the permissions it is given. 
+    
 
       - Configuring the CLI to use access credentials from the user, assumes you have the access ID and key for the user you want to set up as well as aws cli v2+ installed.
 
