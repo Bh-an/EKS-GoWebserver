@@ -35,9 +35,9 @@
       - Clone the repository
 
         ```bash
-            git clone git@github.com:Bh-an/EKS-GoWebserver.git
+            $ git clone git@github.com:Bh-an/EKS-GoWebserver.git
 
-            cd EKS-GoWebserver
+            $ cd EKS-GoWebserver
         ```
        or
 
