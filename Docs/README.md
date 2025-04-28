@@ -5,7 +5,7 @@
 - [Introduction](#introduction)
 - [The application](#the-application)
   - [Language](#language)
-  - [Code Llgic](#code-logic)
+  - [Code Logic](#code-logic)
   - [Package structure](#package-structure)
   - [Containerisation](#containerisation)
   - [Local image testing](#testing-image-locally)
