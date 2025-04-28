@@ -4,6 +4,6 @@ description: Chart for go-webserver running a timeervice
 
 type: application
 
-version: 1.0.4
+version: 1.0.6
 
 appVersion: "1.1.0"
