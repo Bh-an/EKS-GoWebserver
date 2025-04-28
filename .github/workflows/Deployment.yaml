@@ -147,7 +147,7 @@ jobs:
         run: kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller/crds?ref=master"
 
 
-  SystemDiff:
+  SystemDeploy:
     needs: [DeploymentChanges, UpdateDependencies]
     if: ${{ needs.DeploymentChanges.outputs.system == 'true' }}
     runs-on: ubuntu-latest
@@ -208,7 +208,7 @@ jobs:
             </details>
           pr-number: ${{ steps.pr_number.outputs.result }}
 
-  AppDiff:
+  AppDeploy:
     needs: DeploymentChanges
     if: ${{ needs.DeploymentChanges.outputs.app == 'true' }}
     runs-on: ubuntu-latest
