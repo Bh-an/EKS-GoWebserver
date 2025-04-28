@@ -18,6 +18,7 @@
   - [Installing system services](#installing-system-services)
   - [Deploying application](#deploying-the-application)
   - [Testing the application](#testing-the-application)
+- [Cleanup](#cleanup)
 
 
 ## Pre-requisites
@@ -309,10 +310,9 @@
       - - Check if the controller webhook service is up and running
 
         ```bash
-            $ kubectl get pods -n kube-system
-
-            NAME                                                              READY   STATUS    RESTARTS   AGE
-            aws-loadbalancer-controller-aws-load-balancer-controller-79lbrn   1/1     Running   0          98s
+            $ kubectl get svc -n kube-system
+              NAME                                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+              aws-load-balancer-webhook-service   ClusterIP   172.20.194.224   <none>        443/TCP                  86s
         ```
 
 3. ### Deploying the application
@@ -382,5 +382,27 @@
 
       *Note: You can also use your preferred REST tool (postman, restler etc.) by copying the external IP given by ```kubectls get svc -n webservices```, it's also the value stored in ```echo $SERVICE_IP```*
 
+## Cleanup
 
+- Uninstall timeservice helmchart
+ ```bash
+      $ helm uninstall timeservice -n webservices
 
+      release "timeservice" uninstalled
+  ```
+- Uninstall aws-loadbalancer-controller helmchart
+
+  ```bash
+      $ helm uninstall timeservice -n webservices
+
+      release "aws-loadbalancer-controller" uninstalled
+  ```
+- Destroy Terraform infrastructure
+
+  ```bash
+      $ cd terrafrom/
+
+      $ terrafrom destroy
+
+      Destroy complete! Resources: 28 destroyed.
+  ```
