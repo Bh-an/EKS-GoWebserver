@@ -393,7 +393,7 @@
 - Uninstall aws-loadbalancer-controller helmchart
 
   ```bash
-      $ helm uninstall timeservice -n webservices
+      $ helm uninstall aws-loadbalancer-controller -n kube-system
 
       release "aws-loadbalancer-controller" uninstalled
   ```
